@@ -6,8 +6,7 @@
 void _ghast_magma_encrypt_block(uint8_t* block);
 void _ghast_magma_decrypt_block(uint8_t* block);
 
-#ifdef __GHAST_EXPOSE_INTERNALS
-uint32_t ghast_magma_round_f(uint32_t a);
-#endif
+uint32_t _ghast_magma_round_t(uint32_t a);
+uint32_t _ghast_magma_round_f(uint32_t a);
 
 #endif

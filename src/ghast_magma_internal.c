@@ -12,21 +12,27 @@ static uint8_t SBOX_7[16] = {0x8, 0xE, 0x2, 0x5, 0x6, 0x9, 0x1, 0xC, 0xF, 0x4, 0
 static uint8_t SBOX_8[16] = {0x1, 0x7, 0xE, 0xD, 0x0, 0x5, 0x8, 0x3, 0x4, 0xF, 0xA, 0x6, 0x9, 0xC, 0xB, 0x2};
 
 
-static inline uint32_t _ghast_magma_round_f(uint32_t a) {
-    a = ((uint32_t) SBOX_1[a >> 28 & 16]) << 28 |
-        ((uint32_t) SBOX_2[a >> 24 & 16]) << 24 |
-        ((uint32_t) SBOX_3[a >> 20 & 16]) << 20 |
-        ((uint32_t) SBOX_4[a >> 16 & 16]) << 16 |
-        ((uint32_t) SBOX_5[a >> 12 & 16]) << 12 |
-        ((uint32_t) SBOX_6[a >> 8 & 16]) << 8 |
-        ((uint32_t) SBOX_7[a >> 4 & 16]) << 4 |
-        ((uint32_t) SBOX_8[a & 16]);
-    return (a << 11 | a >> 21);
+uint32_t _ghast_magma_round_t(uint32_t a) {
+    a = ((uint32_t) SBOX_8[a >> 28 & 15]) << 28 |
+        ((uint32_t) SBOX_7[a >> 24 & 15]) << 24 |
+        ((uint32_t) SBOX_6[a >> 20 & 15]) << 20 |
+        ((uint32_t) SBOX_5[a >> 16 & 15]) << 16 |
+        ((uint32_t) SBOX_4[a >> 12 & 15]) << 12 |
+        ((uint32_t) SBOX_3[a >> 8 & 15]) << 8 |
+        ((uint32_t) SBOX_2[a >> 4 & 15]) << 4 |
+        ((uint32_t) SBOX_1[a & 15]);
+    return a; 
 }
 
-#ifdef __GHAST_EXPOSE_INTERNALS
-uint32_t ghast_magma_round_f(uint32_t a) {
-    return _ghast_magma_round_f(a);
+uint32_t _ghast_magma_round_f(uint32_t a) {
+    a = ((uint32_t) SBOX_8[a >> 28 & 15]) << 28 |
+        ((uint32_t) SBOX_7[a >> 24 & 15]) << 24 |
+        ((uint32_t) SBOX_6[a >> 20 & 15]) << 20 |
+        ((uint32_t) SBOX_5[a >> 16 & 15]) << 16 |
+        ((uint32_t) SBOX_4[a >> 12 & 15]) << 12 |
+        ((uint32_t) SBOX_3[a >> 8 & 15]) << 8 |
+        ((uint32_t) SBOX_2[a >> 4 & 15]) << 4 |
+        ((uint32_t) SBOX_1[a & 15]);
+    return (a << 11 | a >> 21);
 }
-#endif
 
