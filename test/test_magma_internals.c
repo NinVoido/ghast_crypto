@@ -18,8 +18,13 @@
 
 #define TEST_g(A, B, buf, C) add_to_ghast_be_uint32_t(A, B);\
     _ghast_magma_round_f(A, buf);\
-    printf("%x %x %x %x", buf[0], buf[1], buf[2], buf[3]);
+    printf("%x %x %x %x\n", buf[0], buf[1], buf[2], buf[3]);
+
+#define TEST_enc(G, KEY) _ghast_magma_round_G(G, KEY);\
+    printf("%x %x %x %x %x %x %x %x\n", G[0], G[1], G[2], G[3], G[4], G[5], G[6], G[7]);
+
 #endif
+
 
 #ifndef use_8_bits_uint32
 #define TEST_g(A, B, Y) printf("%x %x\n", _ghast_magma_round_f(((uint32_t) A + (uint32_t) B)), (Y));\
@@ -46,6 +51,9 @@ int main() {
     b[0] = 0xfe; b[1] = 0xdc; b[2] = 0xba; b[3] = 0x98;
     uint8_t buf[4];
     TEST_g(a, b, buf, aa);
+
+    uint8_t pt[8] = {0xfe, 0xdc, 0xba, 0x98, 0x76, 0x54, 0x32, 0x10}, key[4] = {0xff, 0xee, 0xdd, 0xcc};
+    TEST_enc(pt, key);
 #else 
     TEST_t(0xfdb97531, 0x2a196f34);
     TEST_t(0x2a196f34, 0xebd9f03a);

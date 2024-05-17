@@ -2,6 +2,8 @@
 #include "ghast_stdint.h"
 #include "ghast_string.h"
 
+#define XOR4(A, B) A[0] ^= B[0]; A[1] ^= B[1]; A[2] ^= B[2]; A[3] ^= B[3];
+
 static uint8_t SBOX_1[16] = {0xC, 0x4, 0x6, 0x2, 0xA, 0x5, 0xB, 0x9, 0xE, 0x8, 0xD, 0x7, 0x0, 0x3, 0xF, 0x1};
 static uint8_t SBOX_2[16] = {0x6, 0x8, 0x2, 0x3, 0x9, 0xA, 0x5, 0xC, 0x1, 0xE, 0x4, 0x7, 0xB, 0xD, 0x0, 0xF}; 
 static uint8_t SBOX_3[16] = {0xB, 0x3, 0x5, 0x8, 0x2, 0xF, 0xA, 0xD, 0xE, 0x1, 0x7, 0x4, 0xC, 0x9, 0x6, 0x0};
@@ -94,12 +96,15 @@ uint32_t _ghast_magma_round_f(uint32_t a) {
 }
 #endif
 
-void _ghast_magma_encrypt_block(uint8_t* block, uint8_t* key) {
+void _ghast_magma_round_G(uint8_t* block, uint8_t* key) {
     uint8_t buf[4];
+    uint8_t buf2[4];
 
-    for (int i = 0; i < 31; ++i) {
-        memcpy(buf, block + 4, 4);
-     //   (uint32_t*) (block + 4) = _ghast_magma_round_f(*(uint32_t*)(block) + 
-    }
+    memcpy(buf, block + 4, 4);
+    memcpy(buf2, buf, 4);
+    add_to_ghast_be_uint32_t(buf, key);
+    _ghast_magma_round_f(buf, block + 4);
+    XOR4((block + 4), block);
+    memcpy(block, buf2, 4);
 }
 
