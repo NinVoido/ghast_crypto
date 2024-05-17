@@ -108,3 +108,12 @@ void _ghast_magma_round_G(uint8_t* block, uint8_t* key) {
     memcpy(block, buf2, 4);
 }
 
+void _ghast_magma_round_final(uint8_t* block, uint8_t* key) {
+    uint8_t buf[4];
+    uint8_t buf2[4];
+
+    memcpy(buf, block + 4, 4);
+    add_to_ghast_be_uint32_t(buf, key);
+    _ghast_magma_round_f(buf2, buf);
+    XOR4(block, buf2);
+}

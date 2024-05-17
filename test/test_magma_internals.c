@@ -17,7 +17,7 @@
     printf("%x %x %x %x\n", A[0], A[1], A[2], A[3]);
 
 #define TEST_g(A, B, buf, C) add_to_ghast_be_uint32_t(A, B);\
-    _ghast_magma_round_f(A, buf);\
+    _ghast_magma_round_f(A, buf);\бутан
     printf("%x %x %x %x\n", buf[0], buf[1], buf[2], buf[3]);
 
 #define TEST_enc(G, KEY) _ghast_magma_round_G(G, KEY);\
