@@ -1,4 +1,4 @@
-#include "./ghast_magma_ecb.h"
+#include "./ghast_magma_cbc.h"
 #include "./ghast_magma_internal.h"
 #include "./ghast_string.h"
 
@@ -13,15 +13,17 @@
 #define SWAP(BUFA, BUFB) XOR4(BUFA, BUFB); XOR4(BUFB, BUFA); XOR4(BUFA, BUFB);
 
 
-void ghast_magma_ecb_set_key(MagmaCtx* ctx, uint8_t* key) {
+void ghast_magma_cbc_set_key(MagmaCtx* ctx, uint8_t* key) {
     ctx->key = key;
 }
 
 #define PRINTF_DEBUG
 //#undef PRINTF_DEBUG
 
-void ghast_magma_ecb_encrypt_block(MagmaCtx* ctx, uint8_t* block) {
+void ghast_magma_cbc_encrypt_block(MagmaCtx* ctx, uint8_t* block) {
     int i;
+    XOR4(block, ctx->iv);
+    XOR4((block + 4), (ctx->iv + 4));
     for (i = 0; i < 24; ++i) {
         _ghast_magma_round_G(block, ctx->key + ((i & 7) << 2));
 #ifdef PRINTF_DEBUG
@@ -35,10 +37,16 @@ void ghast_magma_ecb_encrypt_block(MagmaCtx* ctx, uint8_t* block) {
 #endif
     }
     SWAP(block, (block + 4));
+    memcpy(ctx->iv, block, 8);
 }
 
-void ghast_magma_ecb_decrypt_block(MagmaCtx* ctx, uint8_t* block) {
+void ghast_magma_cbc_decrypt_block(MagmaCtx* ctx, uint8_t* block) {
     int i;
+    uint8_t iv_backup[8];
+    
+    memcpy(iv_backup, ctx->iv, 8);
+    memcpy(ctx->iv, block, 8);
+
     for (i = 0; i < 8; ++i) {
         _ghast_magma_round_G(block, ctx->key + (i << 2));
 #ifdef PRINTF_DEBUG
@@ -53,10 +61,12 @@ void ghast_magma_ecb_decrypt_block(MagmaCtx* ctx, uint8_t* block) {
     }
 
     SWAP(block, (block + 4));
+    XOR4(block, ctx->iv);
+    XOR4((block + 4), (ctx->iv + 4));
 }
 
-void ghast_magma_ecb_init_ctx(MagmaCtx* ctx) {
-    ctx->ghast_magma_encrypt = ghast_magma_ecb_encrypt_block;
-    ctx->ghast_magma_decrypt = ghast_magma_ecb_decrypt_block;
-    ctx->ghast_magma_set_key = ghast_magma_ecb_set_key;
+void ghast_magma_cbc_init_ctx(MagmaCtx* ctx) {
+    ctx->ghast_magma_encrypt = ghast_magma_cbc_encrypt_block;
+    ctx->ghast_magma_decrypt = ghast_magma_cbc_decrypt_block;
+    ctx->ghast_magma_set_key = ghast_magma_cbc_set_key;
 }
