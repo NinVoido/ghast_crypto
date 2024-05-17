@@ -11,7 +11,14 @@ int main() {
     ctx.ghast_magma_set_key(&ctx, key);
     ctx.ghast_magma_encrypt(&ctx, block);
 
-    for (int i = 0; i < 7; ++i) {
+    for (int i = 0; i < 8; ++i) {
+        printf("%02x", block[i]);
+    }
+
+    printf("\n");
+
+    ctx.ghast_magma_decrypt(&ctx, block);
+    for (int i = 0; i < 8; ++i) {
         printf("%02x", block[i]);
     }
 }
