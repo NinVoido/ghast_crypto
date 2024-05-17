@@ -25,13 +25,13 @@ void ghast_magma_ecb_encrypt_block(MagmaCtx* ctx, uint8_t* block) {
     for (i = 0; i < 24; ++i) {
         _ghast_magma_round_G(block, ctx->key + ((i & 7) << 2));
 #ifdef PRINTF_DEBUG
-        printf("iter %d: %02x%02x%02x%02x %02x%02x%02x%02x\n", i, block[0], block[1], block[2], block[3], block[4], block[5], block[6], block[7]);
+        printf("iter %2d: %02x%02x%02x%02x %02x%02x%02x%02x\n", i, block[0], block[1], block[2], block[3], block[4], block[5], block[6], block[7]);
 #endif
     }
     for (i = 0; i < 8; ++i) {
         _ghast_magma_round_G(block, ctx->key + ((7 - i) << 2));
 #ifdef PRINTF_DEBUG
-        printf("iter %d: %02x%02x%02x%02x %02x%02x%02x%02x\n", i + 8, block[0], block[1], block[2], block[3], block[4], block[5], block[6], block[7]);
+        printf("iter %2d: %02x%02x%02x%02x %02x%02x%02x%02x\n", i + 24, block[0], block[1], block[2], block[3], block[4], block[5], block[6], block[7]);
 #endif
     }
     SWAP(block, (block + 4));
@@ -42,13 +42,13 @@ void ghast_magma_ecb_decrypt_block(MagmaCtx* ctx, uint8_t* block) {
     for (i = 0; i < 8; ++i) {
         _ghast_magma_round_G(block, ctx->key + (i << 2));
 #ifdef PRINTF_DEBUG
-        printf("iter %d: %02x%02x%02x%02x %02x%02x%02x%02x\n", i, block[0], block[1], block[2], block[3], block[4], block[5], block[6], block[7]);
+        printf("iter %2d: %02x%02x%02x%02x %02x%02x%02x%02x\n", i, block[0], block[1], block[2], block[3], block[4], block[5], block[6], block[7]);
 #endif
     }
     for (i = 0; i < 24; ++i) {
         _ghast_magma_round_G(block, ctx->key + ((7 - (i & 7)) << 2));
 #ifdef PRINTF_DEBUG
-        printf("iter %d: %02x%02x%02x%02x %02x%02x%02x%02x\n", i + 8, block[0], block[1], block[2], block[3], block[4], block[5], block[6], block[7]);
+        printf("iter %2d: %02x%02x%02x%02x %02x%02x%02x%02x\n", i + 8, block[0], block[1], block[2], block[3], block[4], block[5], block[6], block[7]);
 #endif
     }
 
