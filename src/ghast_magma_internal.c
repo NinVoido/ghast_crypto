@@ -48,7 +48,27 @@ void add_to_ghast_be_uint32_t(ghast_be_uint32_t a, ghast_be_uint32_t b) {
 }
 #endif
 
+#ifdef use_8_bits_uint32
 
+void _ghast_magma_round_t(ghast_be_uint32_t a) {
+    a[0] = (SBOX_8[a[0] >> 4] << 4) | (SBOX_7[a[0] & 15]);
+    a[1] = (SBOX_6[a[1] >> 4] << 4) | (SBOX_5[a[1] & 15]);
+    a[2] = (SBOX_4[a[2] >> 4] << 4) | (SBOX_3[a[2] & 15]);
+    a[3] = (SBOX_2[a[3] >> 4] << 4) | (SBOX_1[a[3] & 15]);
+}
+
+void _ghast_magma_round_f(ghast_be_uint32_t a, ghast_be_uint32_t dst) {
+    a[0] = (SBOX_8[a[0] >> 4] << 4) | (SBOX_7[a[0] & 15]);
+    a[1] = (SBOX_6[a[1] >> 4] << 4) | (SBOX_5[a[1] & 15]);
+    a[2] = (SBOX_4[a[2] >> 4] << 4) | (SBOX_3[a[2] & 15]);
+    a[3] = (SBOX_2[a[3] >> 4] << 4) | (SBOX_1[a[3] & 15]);
+
+    dst[0] = ((a[1] & 31) << 3) | (a[2] >> 5);
+    dst[1] = ((a[2] & 31) << 3) | (a[3] >> 5);
+    dst[2] = ((a[3] & 31) << 3) | (a[0] >> 5);
+    dst[3] = ((a[0] & 31) << 3) | (a[1] >> 5);
+}
+#else
 uint32_t _ghast_magma_round_t(uint32_t a) {
     a = ((uint32_t) SBOX_8[a >> 28 & 15]) << 28 |
         ((uint32_t) SBOX_7[a >> 24 & 15]) << 24 |
@@ -72,6 +92,7 @@ uint32_t _ghast_magma_round_f(uint32_t a) {
         ((uint32_t) SBOX_1[a & 15]);
     return (a << 11 | a >> 21);
 }
+#endif
 
 void _ghast_magma_encrypt_block(uint8_t* block, uint8_t* key) {
     uint8_t buf[4];
