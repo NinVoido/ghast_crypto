@@ -1,7 +1,10 @@
 #include "./ghast_magma_ecb.h"
 #include "./ghast_magma_internal.h"
 #include "./ghast_string.h"
+
+#ifdef PRINTF_DEBUG
 #include <stdio.h>
+#endif
 
 #define XOR4(A, B) A[0] ^= B[0]; A[1] ^= B[1]; A[2] ^= B[2]; A[3] ^= B[3];
 
